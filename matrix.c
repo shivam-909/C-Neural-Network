@@ -15,13 +15,6 @@ Matrix new_matrix(size_t rows, size_t cols)
   return m;
 }
 
-float random_float(float lb, float ub)
-{
-  return ((float)rand() / (float)RAND_MAX) * (ub - lb) + lb;
-}
-
-int random_int(int lb, int ub) { return (int)random_float(lb, ub); }
-
 void ordered_matrix_dot_product(Matrix dst, Matrix a, Matrix b)
 {
   assert(dst.rows == a.rows);
@@ -38,14 +31,15 @@ void ordered_matrix_dot_product(Matrix dst, Matrix a, Matrix b)
       float af = MATRIX_ELEM_AT(a, a_row_idx, j);
       float bf = MATRIX_ELEM_AT(b, j, b_col_idx);
       float new = af *bf;
-      // printf("i = %d, j = %d, ri = %d, ci = %d \n", i, j, a_row_idx,
-      // b_col_idx); printf("%f * %f = %f \n", af, bf, new);
-      sum += new;
-      // printf("\n");
-    }
 
-    // printf("\n");
-    // printf("\n");
+#ifdef DEBUG
+      printf("i = %zu, j = %zu, ri = %d, ci = %d \n", i, j, a_row_idx,
+             b_col_idx);
+      printf("%f * %f = %f \n", af, bf, new);
+#endif
+
+      sum += new;
+    }
 
     MATRIX_ELEM_AT(dst, a_row_idx, b_col_idx) = sum;
   }
@@ -56,8 +50,6 @@ void matrix_dot_product(Matrix dst, Matrix a, Matrix b)
   int axb = a.cols == b.rows;
   int bxa = b.cols == a.rows;
 
-  // We should be able to match the matrices one way or another.
-  // Matrix multiplication is not commutative, so order matters.
   assert(axb || bxa);
 
   if (axb)
@@ -108,7 +100,7 @@ void matrix_randomise(Matrix m, float lb, float ub)
   }
 }
 
-void print_matrix(Matrix m)
+void print_matrix(Matrix m, const char *name)
 {
   int width;
 
@@ -124,6 +116,8 @@ void print_matrix(Matrix m)
       }
     }
   }
+
+  printf("%s = \n", name);
 
   /* print the arrays */
   for (size_t i = 0; i < m.rows; i++)
