@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MATRIX_ELEM_AT(m, i, j) ((m).es[(i) * (m).cols + (j)])
-
 Matrix new_matrix(size_t rows, size_t cols)
 {
   Matrix m;
@@ -15,8 +13,9 @@ Matrix new_matrix(size_t rows, size_t cols)
   return m;
 }
 
-void ordered_matrix_dot_product(Matrix dst, Matrix a, Matrix b)
+void matrix_dot_product(Matrix dst, Matrix a, Matrix b)
 {
+  assert(a.cols == b.rows);
   assert(dst.rows == a.rows);
   assert(dst.cols == b.cols);
 
@@ -31,35 +30,10 @@ void ordered_matrix_dot_product(Matrix dst, Matrix a, Matrix b)
       float af = MATRIX_ELEM_AT(a, a_row_idx, j);
       float bf = MATRIX_ELEM_AT(b, j, b_col_idx);
       float new = af *bf;
-
-#ifdef DEBUG
-      printf("i = %zu, j = %zu, ri = %d, ci = %d \n", i, j, a_row_idx,
-             b_col_idx);
-      printf("%f * %f = %f \n", af, bf, new);
-#endif
-
       sum += new;
     }
 
     MATRIX_ELEM_AT(dst, a_row_idx, b_col_idx) = sum;
-  }
-}
-
-void matrix_dot_product(Matrix dst, Matrix a, Matrix b)
-{
-  int axb = a.cols == b.rows;
-  int bxa = b.cols == a.rows;
-
-  assert(axb || bxa);
-
-  if (axb)
-  {
-    return ordered_matrix_dot_product(dst, a, b);
-  }
-
-  if (bxa)
-  {
-    return ordered_matrix_dot_product(dst, b, a);
   }
 }
 
@@ -102,6 +76,15 @@ void matrix_randomise(Matrix m, float lb, float ub)
 
 void print_matrix(Matrix m, const char *name)
 {
+
+  printf("%s = \n", name);
+
+  if (m.rows == 1 && m.cols == 1)
+  {
+    printf("[%f]\n", MATRIX_ELEM_AT(m, 0, 0));
+    return;
+  }
+
   int width;
 
   /* compute the required width */
@@ -116,8 +99,6 @@ void print_matrix(Matrix m, const char *name)
       }
     }
   }
-
-  printf("%s = \n", name);
 
   /* print the arrays */
   for (size_t i = 0; i < m.rows; i++)
