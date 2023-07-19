@@ -60,26 +60,38 @@ void sigmoid_matrix(Matrix m);
 typedef struct
 {
   // Defines the neurons in the layer, one column per neuron.
-  // Each row represents the weight of a synapse into that neuron.
-  Matrix *neurons;
+  // Each cell represents the weight of a synapse into that neuron.
+  Matrix neurons;
 
   // Biases.
   // Must be one bias for each neuron in the layer.
-  Matrix *biases;
+  Matrix biases;
 
   // Activation functions.
   // Must be one activation function for each neuron in the layer.
-  enum ACTIVATION_FUNCTION *activation_funcs;
+  enum ACTIVATION_FUNCTION af;
 
 } Layer;
+
+Layer new_layer(Matrix neurons, Matrix biases, enum ACTIVATION_FUNCTION af);
+
+Layer construct_layer(int nn, int ni, int lb, int ub,
+                      enum ACTIVATION_FUNCTION af);
+
+void feed_layer(Matrix dst, Matrix input, Layer layer);
+
+void print_layer(Layer layer, const char *name);
 
 // NETWORK -----------------------------------------------------------------
 
 typedef struct
 {
   Layer *layers;
+  int n;
 } Network;
 
-Network new_network(Layer *layers, int no_layers);
+Network new_network(int n, ...);
+
+Matrix feed_forward(Matrix input, Network network);
 
 #endif // CNN_H

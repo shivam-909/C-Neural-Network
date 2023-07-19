@@ -12,6 +12,31 @@ int main()
 {
   setup();
 
+  Matrix x = new_matrix(1, 2);
+
+  matrix_randomise_int(x, 0, 5);
+
+  MATRIX_PRINT(x);
+
+  Layer l1 = construct_layer(2, 2, 0, 1, sig);
+  Layer l2 = construct_layer(1, 2, 0, 1, sig);
+
+  Network network = new_network(2, l1, l2);
+
+  MATRIX_PRINT(network.layers[0].neurons);
+  MATRIX_PRINT(network.layers[1].neurons);
+  MATRIX_PRINT(network.layers[0].biases);
+  MATRIX_PRINT(network.layers[1].biases);
+
+  Matrix result = feed_forward(x, network);
+
+  MATRIX_PRINT(result);
+}
+
+int main_manual()
+{
+  setup();
+
   int lb = 0;
   int ub = 1;
 

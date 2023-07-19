@@ -85,7 +85,7 @@ void print_matrix(Matrix m, const char *name)
     return;
   }
 
-  int width;
+  int width = 0;
 
   /* compute the required width */
   for (size_t i = 0; i < m.rows; i++)
@@ -112,4 +112,6 @@ void print_matrix(Matrix m, const char *name)
     }
     printf("]\n");
   }
+
+  printf("\n");
 }
