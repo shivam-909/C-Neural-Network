@@ -94,4 +94,20 @@ Network new_network(int n, ...);
 
 Matrix feed_forward(Matrix input, Network network);
 
+// TRAINING ----------------------------------------------------------------
+
+typedef struct
+{
+  Matrix input;
+  Matrix output;
+} TrainingData;
+
+float cost(TrainingData *training_data, int n, Network network);
+
+void finite_diff(Network network, TrainingData *training_data, int n, float eps,
+                 float learn_rate);
+
+void train(Network network, TrainingData *training_data, int n,
+           float iterations, float eps, float learn_rate);
+
 #endif // CNN_H
