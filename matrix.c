@@ -13,6 +13,31 @@ Matrix new_matrix(size_t rows, size_t cols)
   return m;
 }
 
+void free_matrix(Matrix m)
+{
+  if (m.es != NULL)
+  {
+    free(m.es);
+    m.es = NULL;
+    m.cols = 0;
+    m.rows = 0;
+  }
+}
+
+void copy_matrix(Matrix dst, Matrix src)
+{
+  assert(dst.rows == src.rows);
+  assert(dst.cols == src.cols);
+
+  for (size_t i = 0; i < src.rows; i++)
+  {
+    for (size_t j = 0; j < src.cols; j++)
+    {
+      MATRIX_ELEM_AT(dst, i, j) = MATRIX_ELEM_AT(src, i, j);
+    }
+  }
+}
+
 void matrix_dot_product(Matrix dst, Matrix a, Matrix b)
 {
   assert(a.cols == b.rows);

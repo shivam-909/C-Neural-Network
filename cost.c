@@ -1,5 +1,6 @@
 #include "cnn.h"
 #include <assert.h>
+#include <math.h>
 #include <stddef.h>
 
 float diff(float a, float b)
@@ -12,19 +13,19 @@ float diff(float a, float b)
   return b - a;
 }
 
-float cost(TrainingData *data, int n, Network network)
+float cost(TrainingDataCollection td, Network network)
 {
   float total = 0.0f;
-  for (size_t i = 0; i < n; i++)
+
+  for (size_t i = 0; i < td.size; i++)
   {
     float sum = 0.0f;
-    Matrix input_matrix = data[i].input;
-    Matrix output_matrix = data[i].output;
 
-    assert(input_matrix.cols == output_matrix.cols);
-    assert(input_matrix.rows == output_matrix.rows);
+    Matrix input_matrix = td.td[i].input;
+    Matrix output_matrix = td.td[i].output;
 
-    Matrix result = feed_forward(input_matrix, network);
+    Matrix result = new_matrix(output_matrix.rows, output_matrix.cols);
+    feed_forward(result, input_matrix, network);
 
     assert(result.cols == output_matrix.cols);
     assert(result.rows == output_matrix.rows);
@@ -33,13 +34,17 @@ float cost(TrainingData *data, int n, Network network)
     {
       for (size_t k = 0; k < result.cols; k++)
       {
-        sum += diff(MATRIX_ELEM_AT(result, j, k),
-                    MATRIX_ELEM_AT(output_matrix, j, k));
+        float d = diff(MATRIX_ELEM_AT(result, j, k),
+                       MATRIX_ELEM_AT(output_matrix, j, k));
+
+        sum += (d * d);
       }
     }
 
-    total += sum * sum;
+    free_matrix(result);
+
+    total += (sqrt(sum));
   }
 
-  return total / n;
+  return total / td.size;
 }

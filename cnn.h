@@ -15,6 +15,10 @@ typedef struct
 // Allocates a new matrix of size rows x cols;
 Matrix new_matrix(size_t rows, size_t cols);
 
+void free_matrix(Matrix m);
+
+void copy_matrix(Matrix dst, Matrix src);
+
 // Multiplies matrices a and b and stores the result in dst.
 // Asserts that a.cols == b.rows and dst.cols == a.cols and dst.rows == b.rows.
 void matrix_dot_product(Matrix dst, Matrix a, Matrix b);
@@ -32,17 +36,6 @@ void matrix_randomise_int(Matrix m, int lb, int ub);
 
 // Prints a matrix.
 void print_matrix(Matrix m, const char *name);
-
-// UTILITIES ---------------------------------------------------------------
-
-#define MATRIX_PRINT(m) print_matrix(m, #m)
-#define MATRIX_ELEM_AT(m, i, j) ((m).es[(i) * (m).cols + (j)])
-
-// Returns a random float between lb and ub.
-float random_float(float lb, float ub);
-
-// Returns a random integer between lb and ub.
-int random_int(int lb, int ub);
 
 // ACTIVATION FUNCTIONS ----------------------------------------------------
 
@@ -75,24 +68,30 @@ typedef struct
 
 Layer new_layer(Matrix neurons, Matrix biases, enum ACTIVATION_FUNCTION af);
 
+void free_layer(Layer layer);
+
 Layer construct_layer(int nn, int ni, int lb, int ub,
                       enum ACTIVATION_FUNCTION af);
 
 void feed_layer(Matrix dst, Matrix input, Layer layer);
 
-void print_layer(Layer layer, const char *name);
+void print_layer(Layer layer);
 
 // NETWORK -----------------------------------------------------------------
 
 typedef struct
 {
   Layer *layers;
-  int n;
+  int size;
 } Network;
 
 Network new_network(int n, ...);
 
-Matrix feed_forward(Matrix input, Network network);
+void free_network(Network n);
+
+void feed_forward(Matrix dst, Matrix input, Network network);
+
+void print_network(Network network, const char *name);
 
 // TRAINING ----------------------------------------------------------------
 
@@ -102,12 +101,29 @@ typedef struct
   Matrix output;
 } TrainingData;
 
-float cost(TrainingData *training_data, int n, Network network);
+typedef struct
+{
+  TrainingData *td;
+  int size;
+} TrainingDataCollection;
 
-void finite_diff(Network network, TrainingData *training_data, int n, float eps,
-                 float learn_rate);
+float cost(TrainingDataCollection td, Network network);
 
-void train(Network network, TrainingData *training_data, int n,
-           float iterations, float eps, float learn_rate);
+void learn(Network dst, Network network, TrainingDataCollection td, float eps);
+
+void train(Network gradients, Network network, TrainingDataCollection td,
+           size_t iterations, float eps, float learn_rate);
+
+// UTILITIES ---------------------------------------------------------------
+
+#define MATRIX_PRINT(m) print_matrix(m, #m)
+#define MATRIX_ELEM_AT(m, i, j) ((m).es[(i) * (m).cols + (j)])
+#define NETWORK_PRINT(n) print_network(n, #n)
+
+// Returns a random float between lb and ub.
+float random_float(float lb, float ub);
+
+// Returns a random integer between lb and ub.
+int random_int(int lb, int ub);
 
 #endif // CNN_H
