@@ -10,7 +10,7 @@
 void setup() { srand(time(0)); }
 
 // 3a + 3b
-void training_data(TrainingData *td, int n)
+void training_data(TrainingData *td, size_t n)
 {
   for (size_t i = 0; i < n; i++)
   {
@@ -65,7 +65,7 @@ int main()
   Layer g2 = construct_layer(1, 2, 0, 1, sig);
   Network gradients = new_network(2, g1, g2);
 
-  train(gradients, network, tdc, 1000000, 1e-4, 1e-4);
+  train(gradients, network, tdc, 500000, 1e-4, 1e-4);
 
   float new_cost = cost(tdc, network);
 

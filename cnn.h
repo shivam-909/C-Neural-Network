@@ -82,7 +82,7 @@ void print_layer(Layer layer);
 typedef struct
 {
   Layer *layers;
-  int size;
+  size_t size;
 } Network;
 
 Network new_network(int n, ...);
@@ -104,7 +104,7 @@ typedef struct
 typedef struct
 {
   TrainingData *td;
-  int size;
+  size_t size;
 } TrainingDataCollection;
 
 float cost(TrainingDataCollection td, Network network);
