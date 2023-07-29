@@ -65,7 +65,7 @@ int main()
   Layer g2 = construct_layer(1, 2, 0, 1, sig);
   Network gradients = new_network(2, g1, g2);
 
-  train(gradients, network, tdc, 2000000, 1e-5, 1e-5);
+  train(gradients, network, tdc, 1000000, 1e-4, 1e-4);
 
   float new_cost = cost(tdc, network);
 
