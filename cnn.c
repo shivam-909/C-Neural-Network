@@ -14,8 +14,8 @@ void training_data(TrainingData *td, size_t n)
 {
   for (size_t i = 0; i < n; i++)
   {
-    int a = random_int(0, 10);
-    int b = random_int(0, 10);
+    int a = random_int(1, 10);
+    int b = random_int(1, 10);
 
     Matrix in = new_matrix(1, 2);
 
@@ -24,7 +24,7 @@ void training_data(TrainingData *td, size_t n)
 
     Matrix out = new_matrix(1, 1);
 
-    MATRIX_ELEM_AT(out, 0, 0) = (3 * a) + (3 * b);
+    MATRIX_ELEM_AT(out, 0, 0) = (5 * a) + (3 * b);
 
     TrainingData ntd;
 
@@ -44,9 +44,9 @@ int main()
   MATRIX_PRINT(x);
 
   // 2 Neuron layer
-  Layer l1 = construct_layer(2, 2, 0, 5, sig);
+  Layer l1 = construct_layer(2, 2, 0, 5, linear);
   // 1 Neuron layer, accepts 2 inputs
-  Layer l2 = construct_layer(1, 2, 0, 5, sig);
+  Layer l2 = construct_layer(1, 2, 0, 5, linear);
 
   Network network = new_network(2, l1, l2);
   NETWORK_PRINT(network);
@@ -61,11 +61,11 @@ int main()
 
   float network_cost = cost(tdc, network);
 
-  Layer g1 = construct_layer(2, 2, 0, 1, sig);
-  Layer g2 = construct_layer(1, 2, 0, 1, sig);
+  Layer g1 = construct_layer(2, 2, 0, 1, linear);
+  Layer g2 = construct_layer(1, 2, 0, 1, linear);
   Network gradients = new_network(2, g1, g2);
 
-  train(gradients, network, tdc, 500000, 1e-4, 1e-4);
+  train(gradients, network, tdc, 1000000, 1e-4, 1e-4);
 
   float new_cost = cost(tdc, network);
 

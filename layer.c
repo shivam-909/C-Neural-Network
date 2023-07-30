@@ -41,6 +41,11 @@ void feed_layer(Matrix dst, Matrix input, Layer layer)
 {
   matrix_dot_product(dst, input, layer.neurons);
   matrix_sum(dst, layer.biases);
+
+  if (layer.af == sig)
+  {
+    sigmoid_matrix(dst);
+  }
 }
 
 void print_layer(Layer layer)

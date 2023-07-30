@@ -41,6 +41,7 @@ void print_matrix(Matrix m, const char *name);
 
 enum ACTIVATION_FUNCTION
 {
+  linear,
   sig
 };
 
